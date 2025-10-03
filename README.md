@@ -1,8 +1,6 @@
-# einstein
-# programa en Python para resolver el desafio de Einstein
-
 # 🐟 Acertijo de Einstein — Interactivo con Streamlit
 
+# programa en Python para resolver el desafio de Einstein
 
 Este proyecto es una implementación del famoso **Acertijo de Einstein** en **Python + Streamlit**. Permite completar la cuadrícula de las 5 casas y comprobar en tiempo real si se cumplen las 15 reglas del enigma.
 
