@@ -11,49 +11,52 @@ st.write(
 )
 
 houses = ["Casa 1", "Casa 2", "Casa 3", "Casa 4", "Casa 5"]
-colors = ["", "roja", "verde", "blanca", "amarilla", "azul"]
-nationalities = ["", "británico", "sueco", "danés", "noruego", "alemán"]
-beverages = ["", "té", "café", "leche", "cerveza", "agua"]
-cigarettes = ["", "Pall Mall", "Dunhill", "Prince", "Bluemaster", "Blends"]
-pets = ["", "perro", "pájaro", "gato", "caballo", "pez"]
+categories = ["Color", "Nacionalidad", "Bebida", "Cigarro", "Mascota"]
 
-# --- Diseño: dos columnas grandes ---
+options = {
+    "Color": ["", "roja", "verde", "blanca", "amarilla", "azul"],
+    "Nacionalidad": ["", "británico", "sueco", "danés", "noruego", "alemán"],
+    "Bebida": ["", "té", "café", "leche", "cerveza", "agua"],
+    "Cigarro": ["", "Pall Mall", "Dunhill", "Prince", "Bluemaster", "Blends"],
+    "Mascota": ["", "perro", "pájaro", "gato", "caballo", "pez"],
+}
+
+# Diccionarios para guardar selecciones
+grid = {cat: {} for cat in categories}
+
+# --- Diseño: dos columnas ---
 col1, col2 = st.columns([2, 1])
 
 with col1:
     st.subheader("Cuadrícula de casas")
 
-    col, nac, beb, cig, pet = {}, {}, {}, {}, {}
+    # Encabezado de tabla
+    header_cols = st.columns([1] + [1 for _ in houses])
+    header_cols[0].markdown("**Categoría**")
+    for i, h in enumerate(houses):
+        header_cols[i+1].markdown(f"**{h}**")
 
-    # Usamos una tabla con selectores compactos
-    table_cols = st.columns([1, 1, 1, 1, 1, 1])
-    with table_cols[0]:
-        st.markdown("**Casa**")
-        for h in houses:
-            st.markdown(h)
-    with table_cols[1]:
-        st.markdown("**Color**")
+    # Filas de categorías
+    for cat in categories:
+        row = st.columns([1] + [1 for _ in houses])
+        row[0].markdown(f"**{cat}**")
         for i, h in enumerate(houses):
-            col[i] = st.selectbox("", colors, key=f"col{i}", label_visibility="collapsed")
-    with table_cols[2]:
-        st.markdown("**Nacionalidad**")
-        for i, h in enumerate(houses):
-            nac[i] = st.selectbox("", nationalities, key=f"nac{i}", label_visibility="collapsed")
-    with table_cols[3]:
-        st.markdown("**Bebida**")
-        for i, h in enumerate(houses):
-            beb[i] = st.selectbox("", beverages, key=f"beb{i}", label_visibility="collapsed")
-    with table_cols[4]:
-        st.markdown("**Cigarro**")
-        for i, h in enumerate(houses):
-            cig[i] = st.selectbox("", cigarettes, key=f"cig{i}", label_visibility="collapsed")
-    with table_cols[5]:
-        st.markdown("**Mascota**")
-        for i, h in enumerate(houses):
-            pet[i] = st.selectbox("", pets, key=f"pet{i}", label_visibility="collapsed")
+            grid[cat][i] = row[i+1].selectbox(
+                "",
+                options[cat],
+                key=f"{cat}{i}",
+                label_visibility="collapsed"
+            )
 
 with col2:
     st.subheader("Reglas")
+
+    # Alias para accesibilidad
+    col = grid["Color"]
+    nac = grid["Nacionalidad"]
+    beb = grid["Bebida"]
+    cig = grid["Cigarro"]
+    pet = grid["Mascota"]
 
     rules = []
 
@@ -137,6 +140,7 @@ with col2:
         )
     rules.append(("15. Noruego junto a la casa azul", rule15))
 
+    # Mostrar resultados
     for text, fn in rules:
         try:
             ok = fn()
