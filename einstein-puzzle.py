@@ -4,10 +4,10 @@ import streamlit as st
 st.set_page_config(layout="wide", page_title="Acertijo de Einstein")
 
 st.title("🐠 Acertijo de Einstein – ¿Quién tiene el pez?")
+
 st.write(
     "Completa la cuadrícula con las opciones correctas. "
-    "Las reglas se validan en tiempo real: "
-    "✅ si se cumplen, ❌ si no."
+    "Las reglas se validan en tiempo real: ✅ si se cumplen, ❌ si no."
 )
 
 houses = ["Casa 1", "Casa 2", "Casa 3", "Casa 4", "Casa 5"]
@@ -17,24 +17,40 @@ beverages = ["", "té", "café", "leche", "cerveza", "agua"]
 cigarettes = ["", "Pall Mall", "Dunhill", "Prince", "Bluemaster", "Blends"]
 pets = ["", "perro", "pájaro", "gato", "caballo", "pez"]
 
-col1, col2 = st.columns([2, 2])
+# --- Diseño: dos columnas grandes ---
+col1, col2 = st.columns([2, 1])
 
 with col1:
-    st.subheader("Cuadrícula")
-    col = {}
-    nac = {}
-    beb = {}
-    cig = {}
-    pet = {}
+    st.subheader("Cuadrícula de casas")
 
-    for i, h in enumerate(houses):
-        st.markdown(f"**{h}**")
-        col[i] = st.selectbox(f"Color {h}", colors, key=f"color{i}")
-        nac[i] = st.selectbox(f"Nacionalidad {h}", nationalities, key=f"nac{i}")
-        beb[i] = st.selectbox(f"Bebida {h}", beverages, key=f"beb{i}")
-        cig[i] = st.selectbox(f"Cigarro {h}", cigarettes, key=f"cig{i}")
-        pet[i] = st.selectbox(f"Mascota {h}", pets, key=f"pet{i}")
-        st.markdown("---")
+    col, nac, beb, cig, pet = {}, {}, {}, {}, {}
+
+    # Usamos una tabla con selectores compactos
+    table_cols = st.columns([1, 1, 1, 1, 1, 1])
+    with table_cols[0]:
+        st.markdown("**Casa**")
+        for h in houses:
+            st.markdown(h)
+    with table_cols[1]:
+        st.markdown("**Color**")
+        for i, h in enumerate(houses):
+            col[i] = st.selectbox("", colors, key=f"col{i}", label_visibility="collapsed")
+    with table_cols[2]:
+        st.markdown("**Nacionalidad**")
+        for i, h in enumerate(houses):
+            nac[i] = st.selectbox("", nationalities, key=f"nac{i}", label_visibility="collapsed")
+    with table_cols[3]:
+        st.markdown("**Bebida**")
+        for i, h in enumerate(houses):
+            beb[i] = st.selectbox("", beverages, key=f"beb{i}", label_visibility="collapsed")
+    with table_cols[4]:
+        st.markdown("**Cigarro**")
+        for i, h in enumerate(houses):
+            cig[i] = st.selectbox("", cigarettes, key=f"cig{i}", label_visibility="collapsed")
+    with table_cols[5]:
+        st.markdown("**Mascota**")
+        for i, h in enumerate(houses):
+            pet[i] = st.selectbox("", pets, key=f"pet{i}", label_visibility="collapsed")
 
 with col2:
     st.subheader("Reglas")
@@ -62,10 +78,7 @@ with col2:
     rules.append(("5. El alemán fuma Prince", rule5))
 
     def rule6():
-        return any(
-            col[i] == "verde" and i < 4 and col[i + 1] == "blanca"
-            for i in range(4)
-        )
+        return any(col[i] == "verde" and i < 4 and col[i + 1] == "blanca" for i in range(4))
     rules.append(("6. La casa verde está a la izquierda de la blanca", rule6))
 
     def rule7():
@@ -82,7 +95,7 @@ with col2:
 
     def rule10():
         return beb[2] == "leche"
-    rules.append(("10. Casa del centro toma leche", rule10))
+    rules.append(("10. La casa del centro toma leche", rule10))
 
     def rule11():
         return any(
@@ -91,7 +104,7 @@ with col2:
             )
             for i in range(5)
         )
-    rules.append(("11. Blends junto a quien tiene gato", rule11))
+    rules.append(("11. Blends junto a gato", rule11))
 
     def rule12():
         return any(
@@ -124,7 +137,6 @@ with col2:
         )
     rules.append(("15. Noruego junto a la casa azul", rule15))
 
-    # Mostrar reglas con colores y emojis dentro de strings
     for text, fn in rules:
         try:
             ok = fn()
@@ -134,7 +146,7 @@ with col2:
         icon = "✅" if ok else "❌"
         st.markdown(
             f"<div style='color:white; background-color:{color}; "
-            f"padding:4px; border-radius:4px; font-size:14px'>{icon} {text}</div>",
+            f"padding:3px; margin:2px; border-radius:3px; font-size:13px'>{icon} {text}</div>",
             unsafe_allow_html=True
         )
 
